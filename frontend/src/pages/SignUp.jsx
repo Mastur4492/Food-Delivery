@@ -38,6 +38,7 @@ const SignUp = () => {
         const provider = new GoogleAuthProvider()
         const result = await signInWithPopup(auth, provider)
         console.log(result)
+        setLoading(true)
         try {
             const { data } = await axios.post(`${serverUrl}/api/auth/google-auth`, {
                 fullname: result.user.displayName,
@@ -45,12 +46,15 @@ const SignUp = () => {
                 mobileNumber,
                 role,
             }, { withCredentials: true });
+            navigate('/');
+            setLoading(false)
             dispatch(setUserData(data));
             console.log('Google SignUp result:', data);
         } catch (error) {
             console.error('Google SignUp error', error);
             const msg = error?.response?.data?.message || error.message || 'Google sign up failed';
             setError(msg);
+            setLoading(false)
         }
 
     }
@@ -63,7 +67,6 @@ const SignUp = () => {
             setError('Please fill in all required fields')
             return
         }
-        setLoading(true);
         try {
             const result = await axios.post(`${serverUrl}/api/auth/signup`, {
                 fullname,
@@ -79,8 +82,6 @@ const SignUp = () => {
             console.error("Error signing up:", err);
             const msg = err?.response?.data?.message || err.message || 'Sign up failed';
             setError(msg);
-            setLoading(false);
-        } finally {
             setLoading(false);
         }
     }

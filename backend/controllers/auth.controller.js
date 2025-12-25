@@ -131,14 +131,23 @@ const resetPassword = async (req, res) => {
 }
 const googleAuth = async (req, res) => {
     try {
-        const { fullname, email, mobileNumber, role } = req.body;
+        const { fullname, email, mobileNumber, role, profilePic } = req.body;
         let user = await User.findOne({ email });
-        if (!user) {
+        if (user) {
+            const token = await genToken(user._id);
+            return res
+                .cookie("token", token, { httpOnly: false, sameSite: "strict", maxAge: 7 * 24 * 60 * 60 * 1000, secure: false })
+                .status(200)
+                .json({
+                    message: 'User signed in successfully', user, token
+                });
+        } else {
             user = await User.create({
-                fullname,
+                fullname: fullname || "Unknown User", // Value from frontend or fallback
                 email,
-                mobileNumber,
-                role
+                mobileNumber: mobileNumber || "", // Optional now
+                role: role || 'user',
+                profilePic: profilePic || ""
             });
             const token = await genToken(user._id);
             return res

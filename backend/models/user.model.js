@@ -6,31 +6,34 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        email : {
+        email: {
             type: String,
             required: true,
             unique: true
         },
-        password:{
+        password: {
             type: String,
         },
         mobileNumber: {
             type: String,
-            required: true
         },
-        role:{
+        profilePic: {
             type: String,
-            enum: ['user', 'owner','deliveryBoy'],
+            default: ""
+        },
+        role: {
+            type: String,
+            enum: ['user', 'owner', 'deliveryBoy'],
             default: 'user'
         },
-        resetOtp:{
+        resetOtp: {
             type: String,
         },
-        isOtpVerified:{
+        isOtpVerified: {
             type: Boolean,
             default: false
         },
-        otpExpires:{
+        otpExpires: {
             type: Date,
         }
     },

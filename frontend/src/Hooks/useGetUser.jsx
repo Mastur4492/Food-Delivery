@@ -19,6 +19,9 @@ const useGetUser = () => {
         console.log(response.data);
       } catch (error) {
         console.error('Error fetching current user:', error);
+        if (error.response && (error.response.status === 404 || error.response.status === 401)) {
+          dispatch(setUserData(null));
+        }
       }
     };
 
